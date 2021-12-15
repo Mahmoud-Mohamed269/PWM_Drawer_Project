@@ -26,7 +26,7 @@
 #define TIMER1_PWM_FAST_8 5
 #define TIMER1_PWM_FAST_9 6
 #define TIMER1_PWM_FAST_10 7
-#define TIMER1_MODE  TIMER1_CTC
+#define TIMER1_MODE  TIMER1_PWM_FAST_10
 
 //compare output mode
 #define COM_OUT_DIS 0

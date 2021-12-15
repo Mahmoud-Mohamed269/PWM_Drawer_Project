@@ -20,7 +20,6 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-HAL/GLCD \
 HAL/LCD \
 MCAL/DIO \
 MCAL/External_Interupts \

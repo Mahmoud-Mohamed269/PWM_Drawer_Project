@@ -12,7 +12,6 @@ RM := rm -rf
 -include MCAL/External_Interupts/subdir.mk
 -include MCAL/DIO/subdir.mk
 -include HAL/LCD/subdir.mk
--include HAL/GLCD/subdir.mk
 -include subdir.mk
 -include objects.mk
 

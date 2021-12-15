@@ -75,3 +75,8 @@ void Cursor_pos(unsigned char x_pos, unsigned char y_pos){
 		add += y_pos;
 	lcd_send_cmd(add);
 }
+void lcd_clear (void)								/* LCD clear function */
+{
+	lcd_send_cmd (0x01);								/* Clear LCD command */
+	lcd_send_cmd (0x80);								/* 8 is for first line and 0 is for 0th position */
+}

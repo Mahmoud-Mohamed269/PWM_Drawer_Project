@@ -15,4 +15,5 @@ void lcd_send_cmd(unsigned char cmd);
 void lcd_init(void);
 void lcd_send_str(char* string);
 void Cursor_pos(unsigned char x_pos, unsigned char y_pos);
+void lcd_clear (void);
 #endif /* HAL_LCD_LCD_H_ */
