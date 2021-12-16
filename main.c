@@ -15,42 +15,30 @@
 #include <util/delay.h>
 #include <stdlib.h>
 #define F_CPU 16000000UL
-uint8t a, b, c, high, period;
+uint8t fir_raise, fir_fall, sec_raise, high, period;
 long freq;
 float duty_cycle;
 char frequency[14], duty[7];
 int main() {
 	dio_init();
-	Timer1_init();
 	lcd_init();
-	Timer_PWM();
-
-	lcd_send_cmd(0x80);
+	lcd_send_cmd(0x80); //moves the cursor to start from first row
 	lcd_send_str("Freq=");
 	lcd_send_cmd(0xC0); //moves the cursor to the second row
 	lcd_send_str("Duty=");
-
+	Cursor_pos(0, 6);
+	Timer1_init();
+	Timer_PWM();
 	while (1) {
-		while (OCR1B <= 1022) { //turn LED on
-			OCR1B += 1;
-			_delay_ms(5);
-		}
-		_delay_ms(1000);
-		while (OCR1B > 0) { //turn LED off
-			OCR1B -= 1;
-			_delay_ms(5);
-		}
-		_delay_ms(1000);
 
-		Freq_Duty(a, b, c, high, period, &freq, &duty_cycle);
+		Freq_Duty(fir_raise, fir_fall, sec_raise, high, period, &freq, &duty_cycle);
 		ltoa(freq, frequency, 10);
 		itoa((int) duty_cycle, duty, 10);
 
-		Cursor_pos(0,6);
 		lcd_send_str(frequency);
 		lcd_send_str(" Hz");
 		lcd_send_cmd(0xC0); //moves the cursor to the second row
-		Cursor_pos(0,6);
+		Cursor_pos(0, 6);
 		lcd_send_str(duty);
 		lcd_send_str(" %");
 

@@ -39,7 +39,6 @@ void Timer1_init() {
 	SET_BIT(TCCR1A, WGM11);
 	SET_BIT(TCCR1A, COM1B1);
 	SET_BIT(TCCR1B, WGM12);
-	SET_BIT(TCCR1B, CS10);
 #endif
 
 #if TIMER1_COMPARE_OUTPUT == COM_OUT_DIS
@@ -57,69 +56,84 @@ void Timer1_init() {
 #endif
 
 #if TIMO_PRES == TIMO_NO_CLK
-	CLR_BIT(TCCR1, CS10);
-	CLR_BIT(TCCR1, CS11);
-	CLR_BIT(TCCR1, CS12);
+	CLR_BIT(TCCR1B, CS10);
+	CLR_BIT(TCCR1B, CS11);
+	CLR_BIT(TCCR1B, CS12);
 #elif TIMO_PRES == TIMO_NO_PRES
-	SET_BIT(TCCR1A, 0);
-	CLR_BIT(TCCR1A, 1);
-	CLR_BIT(TCCR1A, 2);
+	SET_BIT(TCCR1B, 0);
+	CLR_BIT(TCCR1B, 1);
+	CLR_BIT(TCCR1B, 2);
 #elif TIMO_PRES == TIMO_8_PRES
-	CLR_BIT(TCCR1, 0);
-	SET_BIT(TCCR1, 1);
-	CLR_BIT(TCCR1, 2);
+	CLR_BIT(TCCR1B, 0);
+	SET_BIT(TCCR1B, 1);
+	CLR_BIT(TCCR1B, 2);
 #elif TIMO_PRES == TIMO_64_PRES
-	SET_BIT(TCCR1, 0);
-	SET_BIT(TCCR1, 1);
-	CLR_BIT(TCCR1, 2);
+	SET_BIT(TCCR1B, 0);
+	SET_BIT(TCCR1B, 1);
+	CLR_BIT(TCCR1B, 2);
 #elif TIMO_PRES == TIMO_256_PRES
-	CLR_BIT(TCCR1A, 0);
-	CLR_BIT(TCCR1A, 1);
-	SET_BIT(TCCR1A, 2);
+	CLR_BIT(TCCR1B, 0);
+	CLR_BIT(TCCR1B, 1);
+	SET_BIT(TCCR1B, 2);
 #elif TIMO_PRES == TIMO_1024_PRES
-	SET_BIT(TCCR1A, 0);
-	CLR_BIT(TCCR1A, 1);
-	SET_BIT(TCCR1A, 2);
+	SET_BIT(TCCR1B, 0);
+	CLR_BIT(TCCR1B, 1);
+	SET_BIT(TCCR1B, 2);
 #endif
 }
 void Timer_PWM() {
 	//fast PWM mode
-	//CS10 = 1 (NO Prescaler)
+	//64 Prescaler
+	SET_BIT(TCCR1B, CS10);
 	//CTC mode is enabled
 	OCR1A = 800;
 	OCR1B = 0;
+	while (1) {
+		while (OCR1B <= 1022) { //turn LED on
+			OCR1B += 1;
+			_delay_ms(5);
+		}
+		_delay_ms(1000);
+		while (OCR1B > 0) { //turn LED off
+			OCR1B -= 1;
+			_delay_ms(5);
+		}
+		_delay_ms(1000);
+	}
 }
-void Freq_Duty(uint8t a, uint8t b, uint8t c, uint8t h, uint8t p, long *f, float *d)
-{
+void Freq_Duty(uint8t a, uint8t b, uint8t c, uint8t h, uint8t p, long *f,
+		float *d) {
 	TCCR1A = 0;
+	TCCR1B = 0;
 	TCNT1 = 0;
-	TIFR = (1 << ICF1); /* Clear ICF (Input Capture flag) flag */
+	TIFR = (1 << ICF1); // Clear ICF (Input Capture flag) flag
 
-	TCCR1B = 0x41; /* Rising edge, no prescaler */
+	SET_BIT(TCCR1B,ICES1); // Rising edge
 	while ((TIFR & (1 << ICF1)) == 0)
 		;
-	a = ICR1; /* Take value of capture register */
-	SET_BIT(TIFR, ICF1); /* Clear ICF flag */
+	a = ICR1; // Take value of capture register
+	SET_BIT(TIFR, ICF1); // Clear ICF flag
 
-	TCCR1B = 0x01; /* Falling edge, no prescaler */
+	CLR_BIT(TCCR1B,ICES1); // Falling edge
 	while ((TIFR & (1 << ICF1)) == 0)
 		;
-	b = ICR1; /* Take value of capture register */
-	SET_BIT(TIFR, ICF1); /* Clear ICF flag */
+	b = ICR1; // Take value of capture register
+	SET_BIT(TIFR, ICF1); // Clear ICF flag
 
-	TCCR1B = 0x41; /* Rising edge, no prescaler */
+	SET_BIT(TCCR1B,ICES1); // Rising edge
 	while ((TIFR & (1 << ICF1)) == 0)
 		;
-	c = ICR1; /* Take value of capture register */
-	SET_BIT(TIFR, ICF1); /* Clear ICF flag */
+	c = ICR1; // Take value of capture register
+	SET_BIT(TIFR, ICF1); // Clear ICF flag
 
-	TCCR1B = 0; /* Stop the timer */
+	TCCR1B = 0; // Stop the timer
 
-if(a<b && b<c) /* Check for valid condition,
- to avoid timer overflow reading */
-{
-	h=b-a;
-	p=c-a;
-	*f= F_CPU/p;
-	*d =((float) h /(float)p)*100;}
+	if (a < b && b < c) /* Check for valid condition,
+	 to avoid timer overflow reading */
+	{
+		h = b - a;
+		p = c - a;
+		*f = F_CPU / p;
+		*d = ((float) h / (float) p) * 100;
+	}
 }

@@ -16,5 +16,5 @@
 #include <avr/interrupt.h>
 void Timer1_init();
 void Timer_PWM();
-void Freq_Duty(uint8t a, uint8t b, uint8t c, uint8t h, uint8t period, long *f, float *d);
+void Freq_Duty(uint8t a, uint8t b, uint8t c, uint8t h, uint8t p, long *f, float *d);
 #endif /* MCAL_TIMER_TIMER1_H_ */

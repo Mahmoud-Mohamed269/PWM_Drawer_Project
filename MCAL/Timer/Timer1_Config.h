@@ -15,7 +15,7 @@
 #define TIMO_64_PRES 3
 #define TIMO_256_PRES 4
 #define TIMO_1024_PRES 5
-#define TIMO_PRES  TIMO_NO_PRES
+#define TIMO_PRES  TIMO_64_PRES
 
 //mode
 #define TIMER1_NORMAL 0

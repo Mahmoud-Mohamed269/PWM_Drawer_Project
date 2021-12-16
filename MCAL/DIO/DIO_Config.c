@@ -7,7 +7,6 @@
 #include "DIO_config.h"
 pin_config_type pin_configs[] = {
 		{DIO_PORTD, DIO_PIN4, OUTPUT},
-		{DIO_PORTA, DIO_PIN1, INPUT},
 		{DIO_PORTD, DIO_PIN6, INPUT},
 		//LCD_PINS
 		{DIO_PORTA, DIO_PIN4, OUTPUT},
@@ -15,7 +14,6 @@ pin_config_type pin_configs[] = {
 		{DIO_PORTA, DIO_PIN5, OUTPUT},
 		{DIO_PORTA, DIO_PIN6, OUTPUT},
 		{DIO_PORTA, DIO_PIN7, OUTPUT},
-		{DIO_PORTA, DIO_PIN1, INPUT},
 		{DIO_PORTB, DIO_PIN1, OUTPUT},
 		{DIO_PORTB, DIO_PIN2, OUTPUT},
 		{DIO_PORTB, DIO_PIN3, OUTPUT}
